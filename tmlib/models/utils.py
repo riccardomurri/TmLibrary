@@ -568,6 +568,23 @@ class _SQLAlchemy_Session(object):
         else:
             self._session.add(instance)
 
+    def append_value(self, instance, key, val):
+        '''Append a "key"=>"val" pair to an istance of FeatureValues class.
+
+        Parameters
+        ----------
+        instance: tmlib.models.feature.FeatureValues instance
+        key: string
+        value: string
+        '''
+
+        cls = instance.__class__
+        if isinstance(instance, DistributedExperimentModel):
+            connection = self._session.get_bind()
+            with connection.connection.cursor() as c:
+                cls._append_value(c,instance, key, val)
+
+
     def add_all(self, instances):
         '''Adds multiple instances of a model class.
 
